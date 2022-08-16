@@ -1,5 +1,5 @@
 // import the gql tagged template function - typeDefs must be created before resolvers
-const { gql } = require('apollo-server-express');
+const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
   type User {
@@ -33,7 +33,14 @@ const typeDefs = gql`
     thoughts(username: String): [Thought]
     thought(_id: ID!): Thought
   }
+
+  type Mutation {
+    login(username: String!, email: String!, password: String!): User
+    addUser(username: String!, email: String!, password: String!): User
+  }
 `;
 
 module.exports = typeDefs;
 
+// for above code type mutation -> Both (login(username/addUser(username:) will return a User object: either the user who 
+// successfully logged in or the user who was just created on sign-up.
