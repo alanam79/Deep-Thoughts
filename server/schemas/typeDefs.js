@@ -27,7 +27,15 @@ const typeDefs = gql`
     username: String
   }
 
+  # the token is not part of the USER model, so it gets added here separately
+  # below means that an Auth type must return a token and can optionally include any other user data.
+  type Auth {
+    token: ID!
+    user: User
+  }
+
   type Query {
+    me: User
     users: [User]
     user(username: String!): User
     thoughts(username: String): [Thought]
@@ -35,12 +43,13 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    login(username: String!, email: String!, password: String!): User
-    addUser(username: String!, email: String!, password: String!): User
+    # these are returning the Auth object
+    login(email: String!, password: String!): Auth
+    addUser(username: String!, email: String!, password: String!): Auth
   }
 `;
 
 module.exports = typeDefs;
 
-// for above code type mutation -> Both (login(username/addUser(username:) will return a User object: either the user who 
-// successfully logged in or the user who was just created on sign-up.
+// for above code type mutation -> Both (login(email/password & addUser(username, email, password) will return a User object:
+// either the user who successfully logged in or the user who was just created on sign-up.
