@@ -43,9 +43,13 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    # these are returning the Auth object
+    # the first two are returning the Auth object
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
+    addThought(thoughtText: String!): Thought
+    # addReaction will return the parent Thought instead of the newly created Reaction. This is because the front end will ultimately track changes on the thought level, not the reaction level.
+    addReaction(thoughtId: ID!, reactionBody: String!): Thought
+    addFriend(friendId: ID!): User
   }
 `;
 
