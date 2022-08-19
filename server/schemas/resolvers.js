@@ -47,6 +47,7 @@ const resolvers = {
       const user = await User.create(args);
       // update the two mutation resolvers to sign a token and return an object that combines the token with the user's data
       const token = signToken(user);
+
       return { token, user };
     },
     login: async (parent, { email, password }) => {
