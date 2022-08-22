@@ -5,6 +5,8 @@ import {
   InMemoryCache,
   createHttpLink,
 } from "@apollo/client";
+// With this function, setContext, we can create essentially a middleware function that will retrieve the token for us and combine it with the existing httpLink.
+import { setContext } from "@apollo/client/link/context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -20,11 +22,23 @@ const httpLink = createHttpLink({
   uri: "/graphql",
 });
 
+// using the setContext middleware to tie the token to the httplink
+// Because we're not using the first parameter, but we still need to access the second one, we can use an underscore _ to serve as a placeholder for the first parameter.
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('id_token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+// combine the authLink and httpLink objects so that every request retrieves the token and sets the request headers before making the request to the API.
 const client = new ApolloClient({
-  link: httpLink,
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
-//
 
 function App() {
   return (
